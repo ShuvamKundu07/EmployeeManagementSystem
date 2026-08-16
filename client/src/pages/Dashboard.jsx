@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setData(dummyEmployeeDashboardData); // Replace with actual logic to fetch dashboard data
+    setData(dummyAdminDashboardData); // Replace with actual logic to fetch dashboard data
     setTimeout(() => {
       setLoading(false);
     }, 1000); // Simulate a loading delay
