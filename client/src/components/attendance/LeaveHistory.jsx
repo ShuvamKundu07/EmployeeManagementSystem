@@ -86,7 +86,7 @@ const LeaveHistory = ({leaves, isAdmin, onUpdate}) => {
                 </tbody>
             </table>
           </div>
-        </div>
+    </div>
   )
 }
 
