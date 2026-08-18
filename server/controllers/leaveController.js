@@ -1,9 +1,7 @@
-
+import Employee from "../models/Employee.js";
+import LeaveApplication from "../models/LeaveApplication.js";
 
 // Create leave
-
-import Employee from "../models/Employee";
-import LeaveApplication from "../models/LeaveApplication";
 
 // POST /api/leaves
 export const createLeave = async (req, res) => {
