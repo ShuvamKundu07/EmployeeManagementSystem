@@ -1,15 +1,25 @@
 import React , {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeftIcon, MenuIcon, UserIcon, LayoutGridIcon, UsersIcon, CalendarIcon, FileTextIcon, DollarSignIcon, SettingsIcon, LogOutIcon, ChevronRightIcon} from 'lucide-react';
+import { ArrowLeftIcon, MenuIcon, UserIcon, LayoutGridIcon, UsersIcon, CalendarIcon, FileTextIcon, DollarSignIcon, SettingsIcon, LogOutIcon, ChevronRightIcon, Loader2} from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { XIcon } from 'lucide-react';
 import { dummyProfileData} from '../assets/assets.jsx'
+import { useAuth } from '../context/AuthContext.jsx';
+import api from '../api/axios.js';
 
 const Sidebar = () => {
 
     const {pathname} = useLocation();
     const [userName, setUserName] = useState('');
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    const {user, loading, logout} = useAuth()
+
+    useEffect(()=>{
+        api.get("/profile").then(({data})=>{
+            if(data.firstName) setUserName(`${data.firstName} ${data.lastName || ""}`.trim())
+        })
+    },[])
 
     useEffect(() => {
         setUserName(dummyProfileData.firstName + " " + dummyProfileData.lastName); // Replace with actual logic to get the user's name
@@ -20,7 +30,7 @@ const Sidebar = () => {
         setMobileOpen(false);
     }, [pathname]);
 
-    const role = "" || "EMPLOYEE";
+    const role = user?.role;
 
     const navItems = [
         {
@@ -58,7 +68,7 @@ const Sidebar = () => {
     ];
 
     const handleLogout = () => {
-        // Implement logout logic here
+        logout()
         window.location.href = '/login'; // Redirect to login page
     }
 
@@ -110,7 +120,13 @@ const Sidebar = () => {
 
         {/* Navigation list */}
         <div className='flex-1 px-3 space-y-0.5 overflow-y-auto'>
-            {navItems.map((item) => {
+            {loading ? (
+                <div className='px-3 py-3 flex items-center gap-2 text-slate-500'>
+                    <Loader2 className='animate-spin w-4 h-4'/>
+                    <span className='text-sm'>Loading...</span> 
+                </div>
+            ) : (
+            navItems.map((item) => {
                 const isActive = pathname.startsWith(item.href);
                 return (
                     <Link
@@ -124,7 +140,7 @@ const Sidebar = () => {
                         {isActive && <ChevronRightIcon className="w-3.5 h-3.5 text-indigo-500/50"/>}
                     </Link> 
                 )
-            })}
+            }))}
         </div>
 
         {/* Logout button (pinned to bottom) */}

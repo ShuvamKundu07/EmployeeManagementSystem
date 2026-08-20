@@ -39,7 +39,7 @@ export const updateProfile = async (req, res) => {
             bio: req.body.bio
         })
         
-        return req.json({success: true})
+        return res.json({success: true})
     } catch (error) {
         return res.status(500).json({error: "Failed to update profile"});
     }

@@ -4,7 +4,7 @@ import { DEPARTMENTS } from "../constants/departments.js";
 const employeeSchema = new mongoose.Schema({
     userId: { 
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Employee",
         required: true, 
         unique: true
     },
@@ -62,7 +62,7 @@ const employeeSchema = new mongoose.Schema({
         enum: DEPARTMENTS
     },
 
-}, {timestampsc: true})
+}, {timestamps: true})
 
 const Employee = mongoose.models.Employee || mongoose.model("Employee", employeeSchema)
 

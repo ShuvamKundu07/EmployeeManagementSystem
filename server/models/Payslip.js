@@ -30,7 +30,7 @@ const payslipSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-}, {timestampsc: true})
+}, {timestamps: true})
 
 
 const Payslip = mongoose.models.Payslip || mongoose.model("Payslip", payslipSchema)

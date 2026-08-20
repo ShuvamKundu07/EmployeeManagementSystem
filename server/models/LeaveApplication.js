@@ -29,7 +29,7 @@ const leaveApplicationSchema = new mongoose.Schema({
         default: "PENDING"
     }
 
-}, {timestampsc: true})
+}, {timestamps: true})
 
 const LeaveApplication = mongoose.models.LeaveApplication || mongoose.model("LeaveApplication", leaveApplicationSchema)
 
