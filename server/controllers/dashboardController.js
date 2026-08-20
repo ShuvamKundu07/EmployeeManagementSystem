@@ -2,6 +2,7 @@ import { DEPARTMENTS } from "../constants/departments.js";
 import Attendance from "../models/Attendance.js";
 import Employee from "../models/Employee.js";
 import LeaveApplication from "../models/LeaveApplication.js";
+import Payslip from "../models/Payslip.js";
 
 // Get dashboard for employee and admin
 // GET /api/dashboard
@@ -45,7 +46,7 @@ export const getDashboard = async (req, res) => {
                     }
                 }),
                 LeaveApplication.countDocuments({
-                    employeeId: employee._id,
+                    employee: { ...employee, id: employee._id.toString() },
                     status: "PENDING",
                 }),
                 Payslip.findOne({employeeId: employee._id}).sort({createdAt: -1}).lean(),

@@ -1,16 +1,21 @@
 import React from 'react'
 import { getDayTypeDisplay, getWorkingHoursDisplay } from '../../assets/assets'
-import { format } from 'date-fns'
+import { format, isValid } from 'date-fns'
 
+const AttendanceHistory = ({ history = [] }) => {
+  const formatDate = (dateStr, pattern = "MMM dd, yyyy") => {
+    if (!dateStr) return "-"
+    const d = new Date(dateStr)
+    return isValid(d) ? format(d, pattern) : "-"
+  }
 
-const AttendanceHistory = ({history}) => {
   return (
     <div className='card overflow-hidden'>
       <div className='px-6 py-4 border-b border-slate-100'>
         <h3 className='font-semibold text-slate-900'>Recent Activity</h3>
       </div>
       <div className='overflow-x-auto'>
-        <table className='table-modern'>
+        <table className='table-modern w-full text-left'>
             <thead>
                 <tr>
                     <th className='px-6 py-4'>Date</th>
@@ -29,33 +34,44 @@ const AttendanceHistory = ({history}) => {
                         </td>
                     </tr>
                 ) : (
-                    history.map((record)=>{
-                        const dayType = getDayTypeDisplay(record)
+                    history.map((record) => {
+                        const dayType = getDayTypeDisplay ? getDayTypeDisplay(record) : { label: record.dayType || "-", className: "" }
+                        const workingHours = getWorkingHoursDisplay ? getWorkingHoursDisplay(record) : (record.workingHours ? `${record.workingHours} hrs` : "-")
+
                         return (
-                            <tr key={record._id || record.id}>
+                            <tr key={record._id || record.id} className='hover:bg-slate-50/50 transition-colors'>
                                 <td className='px-6 py-4 font-medium text-slate-900'>
-                                    {format(new Date(record.date), "MMM dd, yyyy")}
+                                    {formatDate(record.date, "MMM dd, yyyy")}
                                 </td>
 
-                                <td className='px-6 py-4 text-slate-600'>
-                                    {record.checkIn ? format(new Date(record.checkIn), "hh:mm a") : "-"}
+                                <td className='px-6 py-4 text-slate-600 font-mono text-xs'>
+                                    {formatDate(record.checkIn, "hh:mm a")}
                                 </td>
 
-                                <td className='px-6 py-4 text-slate-600'>
-                                    {record.checkOut ? format(new Date(record.checkOut), "hh:mm a") : "-"}
+                                <td className='px-6 py-4 text-slate-600 font-mono text-xs'>
+                                    {formatDate(record.checkOut, "hh:mm a")}
                                 </td>
 
                                 <td className='px-6 py-4 text-slate-600 font-medium'>
-                                    {getWorkingHoursDisplay(record)}
+                                    {workingHours}
                                 </td>
 
                                 <td className='px-6 py-4'>
-                                    {dayType.label !== "-" ? <span className={`badge ${dayType.className}`}>{dayType.label}</span> : "-"}
+                                    {dayType?.label && dayType.label !== "-" ? (
+                                      <span className={`badge ${dayType.className || "badge-secondary"}`}>
+                                        {dayType.label}
+                                      </span>
+                                    ) : "-"}
                                 </td>
 
                                 <td className='px-6 py-4'>
-                                    <span className={`badge ${record.status === "PRESENT" ? "badge-success" 
-                                            : record.status === "LATE" ? "badge-warning" : "badge-danger"}`}>
+                                    <span className={`badge ${
+                                        record.status === "PRESENT" 
+                                            ? "badge-success" 
+                                            : record.status === "LATE" 
+                                            ? "badge-warning" 
+                                            : "badge-danger"
+                                    }`}>
                                         {record.status}
                                     </span>
                                 </td>

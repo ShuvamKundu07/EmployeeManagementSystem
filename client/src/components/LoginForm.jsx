@@ -1,7 +1,9 @@
 import React, {useState} from 'react'
 import LoginLeftSide from '../components/LoginLeftSide'
-import { Link }from 'react-router-dom'
+import { Link, useNavigate }from 'react-router-dom'
 import { ArrowLeftIcon, EyeOffIcon, EyeIcon, Loader2Icon} from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import toast from 'react-hot-toast'
 
 const LoginForm = ({role, title, subtitle}) => {
 
@@ -10,6 +12,8 @@ const LoginForm = ({role, title, subtitle}) => {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const {login} = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -17,16 +21,12 @@ const LoginForm = ({role, title, subtitle}) => {
     setError('')
 
     try {
-      // Perform login logic here (e.g., API call)
-      // For demonstration, we'll just log the email and password
-      console.log(`Logging in as ${role}:`, { email, password })
-      // Reset form fields after successful login
-      setEmail('')
-      setPassword('')
-    } catch (err) {
-      setError('Login failed. Please try again.')
+      await login(email, password, role)
+      navigate("/dashboard")
+    } catch (error) {
+        toast.error(error.respose?.data?.error || error.message || "Login failed")
     } finally {
-      setLoading(false)
+        setLoading(false)
     }
   }
 
